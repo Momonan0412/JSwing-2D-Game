@@ -11,6 +11,9 @@ public class Sound {
     URL soundURL[] = new URL[30];
     public Sound(){
         soundURL[0] = getClass().getResource("/res/sound/Ragnarok Prontera Theme.wav");
+        soundURL[1] = getClass().getResource("/res/sound/powerup.wav");
+        soundURL[2] = getClass().getResource("/res/sound/dooropen.wav");
+        soundURL[3] = getClass().getResource("/res/sound/unlock.wav");
     }
     public void setFile (int i){
         try{

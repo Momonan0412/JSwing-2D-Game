@@ -23,11 +23,13 @@ public class GamePanel extends JPanel implements Runnable { /** Need Runnable In
     // SYSTEM
     TileManager tileM = new TileManager(this);
     KeyHandler keyH = new KeyHandler();
-    Sound sound = new Sound();
+    Sound BGM = new Sound();
+    Sound soundEffects = new Sound();
     public CollisionChecker cChecker;
-    public ObjectDrawerThread objectDrawerThread;
-    Thread gameThread;
     public AssetSetter aSetter;
+    public ObjectDrawerThread objectDrawerThread;
+    public UIDrawerThread uiDrawerThread;
+    Thread gameThread;
     // ENTITY AND OBJECT
 
     public Player player = new Player(this, keyH);
@@ -40,11 +42,14 @@ public class GamePanel extends JPanel implements Runnable { /** Need Runnable In
         this.setFocusable(true);
         cChecker = new CollisionChecker(this); /** COLLISION **/
         objectDrawerThread = new ObjectDrawerThread(this);
+        uiDrawerThread = new UIDrawerThread(this);
         aSetter = new AssetSetter(this, objectDrawerThread);
     }
     public void setupGame(){
         objectDrawerThread.start();
         aSetter.setObject();
+        uiDrawerThread.start();
+        System.out.println("UI Drawer Thread!");
         playMusic(0);
     }
     public void startGameThread(){
@@ -85,26 +90,22 @@ public class GamePanel extends JPanel implements Runnable { /** Need Runnable In
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g;
         tileM.draw(g2); // Layer 1 - Draw Tiles first then
-        objectDrawerThread.drawObjects(g2);
-//        for (SuperObject o : objectDrawerThread.obj){ ///////// 25/11/2023 Started to make it in a separate thread
-//            if(o != null){ // To avoid null pointer Error
-//                o.draw(g2, this); // For drawing the key
-//            }
-//        }
+        objectDrawerThread.drawObjects(g2); /**25/11/2023 Started to make it in a separate thread**/
         player.draw(g2); // Layer 2 - Draw Player
+        uiDrawerThread.drawObjects(g2);
         g2.dispose();
     }
     public void playMusic(int i){
-        sound.setFile(i);
-//        sound.play();
-        sound.loop();
-        sound.setVolume(-10.0f);
+        BGM.setFile(i);
+//        BGM.play();
+        BGM.loop();
+        BGM.setVolume(-10.0f);
     }
     public void stopMusic(){
-        sound.stop();
+        BGM.stop();
     }
     public void playSE(int i){
-        sound.setFile(i);
-        sound.play();
+        soundEffects.setFile(i);
+        soundEffects.play();
     }
 }

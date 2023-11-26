@@ -2,6 +2,7 @@ package entity;
 
 import main.GamePanel;
 import main.KeyHandler;
+import main.UI;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -15,7 +16,8 @@ public class Player extends Entity {
     KeyHandler keyH;
     public final int screenX;
     public final int screenY;
-    int hasKey = 0;
+    public int hasKey = 0;
+    UI message;
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
         this.keyH = keyH;
@@ -29,6 +31,7 @@ public class Player extends Entity {
         super.solidAreaDefaultY = solidArea.y;
         solidArea.width = 22; /** 28 + 10*2 = 48 **/
         solidArea.height = 18;
+        message = new UI(gp);
         setDefaultValues();
         getPlayerImage();
     }
@@ -137,21 +140,20 @@ public class Player extends Entity {
             String objectName = gp.objectDrawerThread.obj[index].name;
             switch (objectName) {
                 case "Key" -> {
-                    // gp.playSE(/** NUMBER HERE IF THE SOUND EXIST! **/);
+                     gp.playSE(3);
                     hasKey++;
                     gp.objectDrawerThread.setObject(index, null);
-                    System.out.println("Key: " + hasKey);
+                    message.ShowMessage("YAWE!");
                 }
                 case "Door" -> {
-                    // gp.playSE(/** NUMBER HERE IF THE SOUND EXIST! **/);
+                     gp.playSE(2);
                     if (hasKey > 0) {
                         gp.objectDrawerThread.setObject(index, null);
                         hasKey--;
                     }
-                    System.out.println("Key: " + hasKey);
                 }
                 case "Orb" -> {
-                    // gp.playSE(/** NUMBER HERE IF THE SOUND EXIST! **/);
+                     gp.playSE(1);
                     speed += 2;
                     gp.objectDrawerThread.setObject(index, null);
                 }

@@ -19,8 +19,11 @@ public class ObjectDrawerThread extends Thread {
         while (true) {
             // Schedule a task to repaint Swing components on the EDT
 
-            SwingUtilities.invokeLater(() -> gamePanel.repaint());
-            updateAnimations();
+            SwingUtilities.invokeLater(() -> {
+                gamePanel.repaint();
+                updateAnimations();
+            });
+
             // Sleep for a short duration to control the update rate
             try {
                 Thread.sleep(UPDATE_INTERVAL_MS);
@@ -29,7 +32,7 @@ public class ObjectDrawerThread extends Thread {
             }
         }
     }
-    private void updateAnimations() {
+    private synchronized  void updateAnimations() {
         for (SuperObject o : obj) {
             if (o != null) {
                 o.updateAnimation();

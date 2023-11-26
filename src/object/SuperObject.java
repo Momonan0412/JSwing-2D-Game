@@ -8,7 +8,7 @@ import main.GamePanel;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public abstract class SuperObject extends Entity implements VisibilityCheck, CloneableImageObject {
+public class SuperObject extends Entity implements VisibilityCheck, CloneableImageObject {
     private static final int FRAME_DELAY_MILLIS = 100; // Delay between frames in milliseconds
     private static final int DEFAULT_SOLID_AREA_WIDTH = 48;
     private static final int DEFAULT_SOLID_AREA_HEIGHT = 48;
