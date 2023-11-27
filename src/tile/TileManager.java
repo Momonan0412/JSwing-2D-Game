@@ -2,6 +2,7 @@ package tile;
 
 import interfaces.VisibilityCheck;
 import main.GamePanel;
+import main.UtilityTool;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -9,12 +10,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Objects;
 
 public class TileManager implements VisibilityCheck {
     GamePanel gp;
     public Tile[] tile;
+
+    UtilityTool uTool;
     public int mapTileNum[][];
     public TileManager(GamePanel gp){
+        uTool = new UtilityTool();
         this.gp = gp;
         tile = new Tile[25];
         mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
@@ -22,69 +27,38 @@ public class TileManager implements VisibilityCheck {
         loadMap("/res/Maps/map001.txt");
     }
     public void getTileImage(){
+            setUp(0,"Grass", false);
+            setUp(1,"Small-Tree-Grass", true);
+            setUp(2,"Grass-Rock", true);
+            setUp(3,"Grass-Log", true);
+            setUp(4,"Mizu1-Top", true);
+            setUp(5,"Mizu2-Top", true);
+            setUp(6,"Mizu3-Top", true);
+            setUp(7,"Mizu1-Middle", true);
+            setUp(8,"Mizu2-Middle", true);
+            setUp(9,"Mizu3-Middle", true);
+            setUp(10,"Mizu1-Bottom", true);
+            setUp(11,"Mizu2-Bottom", true);
+            setUp(12,"Mizu3-Bottom", true);
+            setUp(14,"Grass-Stone", true);
+            setUp(15,"Grass-Dirt", false);
+            setUp(16,"Grass-Dirt2", false);
+            setUp(17,"Sand1", false);
+            setUp(18,"Sand2", true);
+            setUp(19,"Sand3", false);
+            setUp(20,"Sand4", false);
+            setUp(21,"Sand5", true);
+            setUp(22,"Sand6", false);
         try{
-            tile[0] = new Tile();
-            tile[0].image = ImageIO.read(getClass().getResourceAsStream("/res/Tiles/Grass.png"));
-            tile[1] = new Tile();
-            tile[1].image = ImageIO.read(getClass().getResourceAsStream("/res/Tiles/Small-Tree-Grass.png"));
-            tile[1].collision = true;
-            tile[2] = new Tile();
-            tile[2].image = ImageIO.read(getClass().getResourceAsStream("/res/Tiles/Grass-Rock.png"));
-            tile[2].collision = true;
-            tile[3] = new Tile();
-            tile[3].image = ImageIO.read(getClass().getResourceAsStream("/res/Tiles/Grass-Log.png"));
-            tile[3].collision = true;
-            tile[4] = new Tile();
-            tile[4].image = ImageIO.read(getClass().getResourceAsStream("/res/Tiles/Mizu1-Top.png"));
-            tile[4].collision = true;
-            tile[5] = new Tile();
-            tile[5].image = ImageIO.read(getClass().getResourceAsStream("/res/Tiles/Mizu2-Top.png"));
-            tile[5].collision = true;
-            tile[6] = new Tile();
-            tile[6].image = ImageIO.read(getClass().getResourceAsStream("/res/Tiles/Mizu3-Top.png"));
-            tile[6].collision = true;
-            tile[7] = new Tile();
-            tile[7].image = ImageIO.read(getClass().getResourceAsStream("/res/Tiles/Mizu1-Middle.png"));
-            tile[7].collision = true;
-            tile[8] = new Tile();
-            tile[8].image = ImageIO.read(getClass().getResourceAsStream("/res/Tiles/Mizu2-Middle.png"));
-            tile[8].collision = true;
-            tile[9] = new Tile();
-            tile[9].image = ImageIO.read(getClass().getResourceAsStream("/res/Tiles/Mizu3-Middle.png"));
-            tile[9].collision = true;
-            tile[10] = new Tile();
-            tile[10].image = ImageIO.read(getClass().getResourceAsStream("/res/Tiles/Mizu1-Bottom.png"));
-            tile[10].collision = true;
-            tile[11] = new Tile();
-            tile[11].image = ImageIO.read(getClass().getResourceAsStream("/res/Tiles/Mizu2-Bottom.png"));
-            tile[11].collision = true;
-            tile[12] = new Tile();
-            tile[12].image = ImageIO.read(getClass().getResourceAsStream("/res/Tiles/Mizu3-Bottom.png"));
-            tile[12].collision = true;
+            /** TO-BE-REVISED
+             *  IDEA: WHAT IF THIS WOULD BE A "SUPER-OBJECT"? OR MAYBE CREATE A DESIGN CLASS?
+             *  OR JUST COMPLETE DELETE
+             *  OR JUST MAKE IT AN ANIMATION
+             * **/
             tile[13] = new Tile();
-            tile[13].image = ImageIO.read(getClass().getResourceAsStream("/res/Aesthetic/Tree-Water.png")); /**(48*3)(48*3) PIXELS **/
+            tile[13].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/Aesthetic/Tree-Water.png")));/**(48*3)(48*3) PIXELS **/
+            tile[13].image = uTool.scaleImage(tile[13].image, gp.tileSize*3, gp.tileSize*3);
             tile[13].collision = true;
-            tile[14] = new Tile();
-            tile[14].image = ImageIO.read(getClass().getResourceAsStream("/res/Tiles/Grass-Stone.png"));
-            tile[14].collision = true;
-            tile[15] = new Tile();
-            tile[15].image = ImageIO.read(getClass().getResourceAsStream("/res/Tiles/Grass-Dirt.png"));
-            tile[16] = new Tile();
-            tile[16].image = ImageIO.read(getClass().getResourceAsStream("/res/Tiles/Grass-Dirt2.png"));
-            tile[17] = new Tile();
-            tile[17].image = ImageIO.read(getClass().getResourceAsStream("/res/Tiles/Sand1.png"));
-            tile[18] = new Tile();
-            tile[18].image = ImageIO.read(getClass().getResourceAsStream("/res/Tiles/Sand2.png"));
-            tile[18].collision = true;
-            tile[19] = new Tile();
-            tile[19].image = ImageIO.read(getClass().getResourceAsStream("/res/Tiles/Sand3.png"));
-            tile[20] = new Tile();
-            tile[20].image = ImageIO.read(getClass().getResourceAsStream("/res/Tiles/Sand4.png"));
-            tile[21] = new Tile();
-            tile[21].image = ImageIO.read(getClass().getResourceAsStream("/res/Tiles/Sand5.png"));
-            tile[21].collision = true;
-            tile[22] = new Tile();
-            tile[22].image = ImageIO.read(getClass().getResourceAsStream("/res/Tiles/Sand6.png"));
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -138,9 +112,13 @@ public class TileManager implements VisibilityCheck {
 
             if (isVisible(worldX, worldY, gp)) { /** COMMON FOR GAME DEVELOPMENT**/
                 if (tileNum != -1) {
+                    /**
+                     * 27/11/2023 : THIS WAS NOT NEEDED ANYMORE SINCE THE SCALE-IMAGE WAS INTRODUCED
                     int drawSize = (tileNum == 13) ? gp.tileSize * 3 : gp.tileSize;
-                    g2.drawImage(tile[tileNum].image, screenX, screenY, drawSize, drawSize, null);
-                    g2.drawRect(screenX, screenY, drawSize, drawSize); /** Collision Check! Debug! **/
+                   g2.drawImage(tile[tileNum].image, screenX, screenY, drawSize, drawSize, null);
+                   g2.drawRect(screenX, screenY, drawSize, drawSize); // Collision Check! Debug!
+                 **/
+                    g2.drawImage(tile[tileNum].image, screenX, screenY, null);
                 }
             }
 
@@ -153,6 +131,16 @@ public class TileManager implements VisibilityCheck {
                 worldRow++; /** WALA KO KASABUT! **/
 
             }
+        }
+    }
+    public void setUp(int index, String imagePath, boolean collision){
+        try {
+            tile[index] = new Tile();
+            tile[index].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/Tiles/" + imagePath + ".png")));
+            tile[index].image = uTool.scaleImage(tile[index].image, gp.tileSize, gp.tileSize);
+            tile[index].collision = collision;
+        }catch (IOException e){
+            e.printStackTrace();
         }
     }
 }

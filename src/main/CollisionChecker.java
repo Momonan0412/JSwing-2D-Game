@@ -3,6 +3,8 @@ package main;
 import entity.Entity;
 import object.SuperObject;
 
+import static main.GamePanel.getGPTile;
+
 public class CollisionChecker {
     private GamePanel gp;
 
@@ -19,29 +21,29 @@ public class CollisionChecker {
          * Explanation
          *
          * **/
-        int entityLeftCol = entityLeftWorldX / gp.tileSize;
-        int entityRightCol = entityRightWorldX / gp.tileSize;
-        int entityTopRow = entityTopWorldY / gp.tileSize;
-        int entityBottomRow = entityBottomWorldY / gp.tileSize;
+        int entityLeftCol = entityLeftWorldX / getGPTile();
+        int entityRightCol = entityRightWorldX / getGPTile();
+        int entityTopRow = entityTopWorldY / getGPTile();
+        int entityBottomRow = entityBottomWorldY / getGPTile();
         int tileNum1 = 0, tileNum2 = 0;
         switch(entity.direction){
             case "up":
-                    entityTopRow = (entityTopWorldY - entity.speed) / gp.tileSize;
+                    entityTopRow = (entityTopWorldY - entity.speed) / getGPTile();
                     tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityTopRow]; /** Collision of the pixel's top left most **/
                     tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityTopRow]; /** Collision of the pixel's top right most **/
                     break;
             case "down":
-                    entityBottomRow = (entityBottomWorldY + entity.speed) / gp.tileSize;
+                    entityBottomRow = (entityBottomWorldY + entity.speed) / getGPTile();
                     tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityBottomRow]; /** Collision of the pixel's bottom left most **/
                     tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityBottomRow]; /** Collision of the pixel's bottom right most **/
                     break;
             case "left":
-                    entityLeftCol = (entityLeftWorldX - entity.speed) / gp.tileSize;
+                    entityLeftCol = (entityLeftWorldX - entity.speed) / getGPTile();
                     tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityTopRow]; /** Collision of the pixel's top left most **/
                     tileNum2 = gp.tileM.mapTileNum[entityLeftCol][entityBottomRow]; /** Collision of the pixel's bottom left most **/
                     break;
             case "right":
-                    entityRightCol = (entityRightWorldX + entity.speed) / gp.tileSize;
+                    entityRightCol = (entityRightWorldX + entity.speed) / getGPTile();
                     tileNum1 = gp.tileM.mapTileNum[entityRightCol][entityTopRow]; /** Collision of the pixel's top right most **/
                     tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityBottomRow]; /** Collision of the pixel's bottom right most **/
                 break;

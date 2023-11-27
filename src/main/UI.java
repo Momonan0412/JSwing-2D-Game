@@ -8,6 +8,8 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 
+import static main.GamePanel.getGPTile;
+
 public class UI implements Cloneable {
     private static final int FRAME_DELAY_MILLIS = 100; // Delay between frames in milliseconds
     private long messageStartTime = 0;
@@ -36,7 +38,7 @@ public class UI implements Cloneable {
         messageOn = true;
     }
     public void draw(Graphics2D g2) {
-        g2.drawImage(key.images[currentFrame], gp.tileSize/2,gp.tileSize/2, gp.tileSize,gp.tileSize, null);
+        g2.drawImage(key.images[currentFrame], getGPTile()/2,getGPTile()/2, getGPTile(),getGPTile(), null);
     }
     public void writeMessage(Graphics2D g2){
         // Beside Key Animation
@@ -47,14 +49,14 @@ public class UI implements Cloneable {
             String text = "You found the treasure!";
             int textLength = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
             int x = gp.screenWidth / 2 - textLength / 2;
-            int y = gp.screenHeight / 2 - (gp.tileSize * 3);
+            int y = gp.screenHeight / 2 - (getGPTile() * 3);
 
             g2.drawString(text, x, y);
 
             text = "Your time: " + dFormat.format(playTime) + "!";
             textLength = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
             x = gp.screenWidth / 2 - textLength / 2;
-            y = gp.screenHeight / 2 + (gp.tileSize * 5);
+            y = gp.screenHeight / 2 + (getGPTile() * 5);
 
             g2.drawString(text, x, y);
 
@@ -64,7 +66,7 @@ public class UI implements Cloneable {
             text = "Congrats!";
             textLength = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
             x = gp.screenWidth / 2 - textLength / 2;
-            y = gp.screenHeight / 2 + (gp.tileSize * 3);
+            y = gp.screenHeight / 2 + (getGPTile() * 3);
 
             g2.drawString(text, x, y);
 
@@ -73,11 +75,11 @@ public class UI implements Cloneable {
 
             g2.drawString("x " + gp.player.hasKey, 80, 60);
             playTime += (double) 1/60;
-            g2.drawString("Time: " + dFormat.format(playTime), gp.tileSize * 11 , 60);
+            g2.drawString("Time: " + dFormat.format(playTime), getGPTile() * 11 , 60);
             // Picked Up "Message"
             if (messageOn) {
                 g2.setFont(g2.getFont().deriveFont(30F));
-                g2.drawString(message, gp.tileSize / 2, gp.tileSize * 5);
+                g2.drawString(message, getGPTile() / 2, getGPTile() * 5);
                 if (messageStartTime == 0) {
                     // Record the start time when the message is first shown
                     messageStartTime = System.currentTimeMillis();

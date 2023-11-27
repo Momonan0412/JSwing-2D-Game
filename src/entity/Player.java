@@ -1,18 +1,19 @@
 package entity;
 
-import main.GamePanel;
-import main.KeyHandler;
-import main.UI;
-import main.UIDrawerThread;
+import main.*;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.nio.Buffer;
 import java.util.Objects;
 import java.util.Random;
 
+import static main.GamePanel.getGPTile;
+
 public class Player extends Entity {
+    UtilityTool uTool;
     GamePanel gp;
     KeyHandler keyH;
     public final int screenX;
@@ -21,8 +22,8 @@ public class Player extends Entity {
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
         this.keyH = keyH;
-        this.screenX = (gp.screenWidth/2) - (gp.tileSize/2);
-        this.screenY = (gp.screenHeight/2) - (gp.tileSize/2);
+        this.screenX = (gp.screenWidth/2) - (getGPTile()/2);
+        this.screenY = (gp.screenHeight/2) - (getGPTile()/2);
 //        solidArea = new Rectangle(5, 16, gp.tileSize-20, gp.tileSize-20); /** Adjust these values and check what works for the game **/
         solidArea = new Rectangle();
         solidArea.x = 13; /** x*2 + with == 48 **/
@@ -39,8 +40,8 @@ public class Player extends Entity {
         return size;
     }
     public void setDefaultValues(){
-        super.worldX = gp.tileSize*36;
-        super.worldY = gp.tileSize*32;
+        super.worldX = getGPTile()*36;
+        super.worldY = getGPTile()*32;
         super.speed = 2;
         super.upSize = 8; /** # Frames **/
         super.downSize = 8; /** # Frames **/
@@ -48,6 +49,7 @@ public class Player extends Entity {
         super.rightSize = 8; /** # Frames **/
         super.idleSize = 3;
         super.direction = "idle"; /** Initial position shown or static **/
+        uTool = new UtilityTool();
         up = new BufferedImage[upSize];
         down = new BufferedImage[downSize];
         left = new BufferedImage[leftSize];
@@ -55,25 +57,21 @@ public class Player extends Entity {
         idle = new BufferedImage[idleSize];
     }
     public void getPlayerImage(){
-        try {
             for(int i = 0; i < upSize; i++){
-                super.up[i] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/Unfinished 2D Character/Back" + (i + 1) + ".png")));
+                super.up[i] = uTool.setup("Unfinished 2D Character/Back", i);
             }
             for(int i = 0; i < downSize; i++){
-                super.down[i] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/Unfinished 2D Character/Front" + (i + 1) + ".png")));
+                super.down[i] = uTool.setup("Unfinished 2D Character/Front", i);
             }
             for(int i = 0; i < leftSize; i++){
-                super.left[i] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/Unfinished 2D Character/Left" + (i + 1) + ".png")));
+                super.left[i] = uTool.setup("Unfinished 2D Character/Left", i);
             }
             for(int i = 0; i < rightSize; i++){
-                super.right[i] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/Unfinished 2D Character/Right" + (i + 1) + ".png")));
+                super.right[i] = uTool.setup("Unfinished 2D Character/Right", i);
             }
             for(int i = 0; i < idleSize; i++){
-                super.idle[i] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/Unfinished 2D Character/Idle" + (i + 1) + ".png")));
+                super.idle[i] = uTool.setup("Unfinished 2D Character/Idle", i);
             }
-        }catch (IOException e){
-            e.printStackTrace();
-        }
     }
     public void update(){
 
@@ -190,7 +188,8 @@ public class Player extends Entity {
                     break;
             }
             if (image != null && spriteCounter < image.length) {
-                g2.drawImage(image[spriteCounter], screenX, screenY, gp.tileSize, gp.tileSize, null);
+//                g2.drawImage(image[spriteCounter], screenX, screenY, gp.tileSize, gp.tileSize, null);
+                g2.drawImage(image[spriteCounter], screenX, screenY, null);
                 g2.setColor(Color.RED); // or any other color
                 g2.drawRect(screenX, screenY, gp.tileSize, gp.tileSize); /** Collision Check! Debug! **/
             }

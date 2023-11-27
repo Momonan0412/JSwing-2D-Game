@@ -6,7 +6,7 @@ import java.awt.*;
 
 public class UIDrawerThread extends Thread{
     private static final int UPDATE_INTERVAL_MS = 1;
-    private GamePanel gamePanel;
+    private final GamePanel gamePanel;
 
     public static UI[] uiDisplay;
     public UIDrawerThread(GamePanel gp){

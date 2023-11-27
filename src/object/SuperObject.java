@@ -4,11 +4,14 @@ import entity.Entity;
 import interfaces.CloneableImageObject;
 import interfaces.VisibilityCheck;
 import main.GamePanel;
+import main.UtilityTool;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class SuperObject extends Entity implements VisibilityCheck, CloneableImageObject {
+import static main.GamePanel.getGPTile;
+
+public abstract class SuperObject extends Entity implements VisibilityCheck, CloneableImageObject {
     private static final int FRAME_DELAY_MILLIS = 100; // Delay between frames in milliseconds
     private static final int DEFAULT_SOLID_AREA_WIDTH = 48;
     private static final int DEFAULT_SOLID_AREA_HEIGHT = 48;
@@ -21,6 +24,7 @@ public class SuperObject extends Entity implements VisibilityCheck, CloneableIma
     public int solidAreaDefaultY = 0;
     private int currentFrame = 0;
     private long lastFrameTime = 0;
+    UtilityTool utilityTool = new UtilityTool();
 
     @Override
     public void draw(Graphics2D g2) {
@@ -44,7 +48,7 @@ public class SuperObject extends Entity implements VisibilityCheck, CloneableIma
 
                 if (isVisible(worldX, worldY, gp)) {
                     // Draw the current frame
-                    g2.drawImage(images[currentFrame], screenX, screenY, gp.tileSize, gp.tileSize, null);
+                    g2.drawImage(getImages()[currentFrame], screenX, screenY, null);
                 }
             }
         } catch (Exception e) {
@@ -60,6 +64,10 @@ public class SuperObject extends Entity implements VisibilityCheck, CloneableIma
             lastFrameTime = currentTime;
         }
     }
+
+    public abstract BufferedImage[] getImages();
+
+    /** DEEP CLONE COPY **/
     @Override
     public CloneableImageObject cloneObject() {
         try {
@@ -80,4 +88,17 @@ public class SuperObject extends Entity implements VisibilityCheck, CloneableIma
             throw new InternalError(e);
         }
     }
+    /** SHALLOW CLONE COPY **/
+//    @Override
+//    public CloneableImageObject cloneObject() {
+//        try {
+//            SuperObject clonedObject = (SuperObject) super.clone();
+//            clonedObject.images = images; // Shallow copy: copying the reference to the array
+//
+//            return clonedObject;
+//        } catch (CloneNotSupportedException e) {
+//            throw new InternalError(e);
+//        }
+//    }
+
 }

@@ -9,9 +9,9 @@ import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements Runnable { /** Need Runnable Interface To Use Thread **/
     // SCREEN SETTINGS
-    final int originalTileSize = 16; // 16x16 tile
-    final int scale = 3;
-    public final int tileSize = originalTileSize * scale; // 48x48 tile
+    static final int originalTileSize = 16; // 16x16 tile
+    static final int scale = 3;
+    public static int tileSize = originalTileSize * scale; // 48x48 tile
     public final int maxScreenCol = 16;
     public final int maxScreenRow = 12;
     public final int screenWidth = tileSize * maxScreenCol; // 768 pixels
@@ -60,7 +60,7 @@ public class GamePanel extends JPanel implements Runnable { /** Need Runnable In
     }
     @Override
     public void run() {
-        double drawInterval = 1000000000 / FPS;
+        double drawInterval = (double) 1000000000 / FPS;
         double delta = 0;
         long lastTime = System.nanoTime();
         long currentTime;
@@ -89,8 +89,16 @@ public class GamePanel extends JPanel implements Runnable { /** Need Runnable In
     }
 
     public void paintComponent(Graphics g){
-        super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g;
+        super.paintComponent(g);
+
+        /**Debugging**/
+        long drawStart = 0;
+        if(keyH.checkDrawTime){
+            drawStart = System.nanoTime();
+        }
+        /**Debugging**/
+
         tileM.draw(g2); // Layer 1 - Draw Tiles first
         objectDrawerThread.drawObjects(g2); // Layer 2 - Draw Objects
         player.draw(g2); // Layer 3 - Draw Player
@@ -98,6 +106,16 @@ public class GamePanel extends JPanel implements Runnable { /** Need Runnable In
         // Draw UI elements and show messages
         uiDrawerThread.drawObjects(g2);
         showMessage.writeMessage(g2);
+
+        /**Debugging**/
+        if(keyH.checkDrawTime){
+            long drawEnd = System.nanoTime();
+            long passed = drawEnd - drawStart;
+            g2.setColor(Color.white);
+            g2.drawString("Draw Time: " + passed, 10, 400);
+            System.out.println("Draw Time: " + passed);
+        }
+        /**Debugging**/
 
         g2.dispose();
     }
@@ -113,5 +131,9 @@ public class GamePanel extends JPanel implements Runnable { /** Need Runnable In
     public void playSE(int i){
         soundEffects.setFile(i);
         soundEffects.play();
+    }
+
+    public static int getGPTile() {
+        return tileSize;
     }
 }
