@@ -33,15 +33,15 @@ public class AssetSetter {
         drawerThread.obj[4].worldY = 24 * gp.tileSize;
 
         drawerThread.obj[5] = new OBJ_Chest();
-        drawerThread.obj[5].worldX = 22 * gp.tileSize;
-        drawerThread.obj[5].worldY = 22 * gp.tileSize;
+        drawerThread.obj[5].worldX = 20 * gp.tileSize;
+        drawerThread.obj[5].worldY = 20 * gp.tileSize;
 
-        drawerThread.obj[5] = new OBJ_Orb();
-        drawerThread.obj[5].worldX = 29 * gp.tileSize;
-        drawerThread.obj[5].worldY = 29 * gp.tileSize;
+        drawerThread.obj[6] = new OBJ_Orb();
+        drawerThread.obj[6].worldX = 29 * gp.tileSize;
+        drawerThread.obj[6].worldY = 29 * gp.tileSize;
 
-        drawerThread.obj[6] = new OBJ_Tornado();
-        drawerThread.obj[6].worldX = 30 * gp.tileSize;
-        drawerThread.obj[6].worldY = 30 * gp.tileSize;
+        drawerThread.obj[7] = new OBJ_Tornado();
+        drawerThread.obj[7].worldX = 30 * gp.tileSize;
+        drawerThread.obj[7].worldY = 30 * gp.tileSize;
     }
 }

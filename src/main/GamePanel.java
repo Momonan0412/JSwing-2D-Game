@@ -29,6 +29,7 @@ public class GamePanel extends JPanel implements Runnable { /** Need Runnable In
     public AssetSetter aSetter;
     public ObjectDrawerThread objectDrawerThread;
     public UIDrawerThread uiDrawerThread;
+    public UI showMessage;
     Thread gameThread;
     // ENTITY AND OBJECT
 
@@ -44,6 +45,7 @@ public class GamePanel extends JPanel implements Runnable { /** Need Runnable In
         objectDrawerThread = new ObjectDrawerThread(this);
         uiDrawerThread = new UIDrawerThread(this);
         aSetter = new AssetSetter(this, objectDrawerThread);
+        showMessage = new UI(this);
     }
     public void setupGame(){
         objectDrawerThread.start();
@@ -89,10 +91,14 @@ public class GamePanel extends JPanel implements Runnable { /** Need Runnable In
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g;
-        tileM.draw(g2); // Layer 1 - Draw Tiles first then
-        objectDrawerThread.drawObjects(g2); /**25/11/2023 Started to make it in a separate thread**/
-        player.draw(g2); // Layer 2 - Draw Player
+        tileM.draw(g2); // Layer 1 - Draw Tiles first
+        objectDrawerThread.drawObjects(g2); // Layer 2 - Draw Objects
+        player.draw(g2); // Layer 3 - Draw Player
+
+        // Draw UI elements and show messages
         uiDrawerThread.drawObjects(g2);
+        showMessage.writeMessage(g2);
+
         g2.dispose();
     }
     public void playMusic(int i){

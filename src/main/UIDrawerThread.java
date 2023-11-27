@@ -3,13 +3,12 @@ package main;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
 public class UIDrawerThread extends Thread{
     private static final int UPDATE_INTERVAL_MS = 1;
     private GamePanel gamePanel;
 
-    public UI[] uiDisplay;
+    public static UI[] uiDisplay;
     public UIDrawerThread(GamePanel gp){
         this.gamePanel = gp;
         uiDisplay = new UI[10];

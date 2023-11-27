@@ -3,6 +3,7 @@ package entity;
 import main.GamePanel;
 import main.KeyHandler;
 import main.UI;
+import main.UIDrawerThread;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -17,7 +18,6 @@ public class Player extends Entity {
     public final int screenX;
     public final int screenY;
     public int hasKey = 0;
-    UI message;
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
         this.keyH = keyH;
@@ -31,7 +31,6 @@ public class Player extends Entity {
         super.solidAreaDefaultY = solidArea.y;
         solidArea.width = 22; /** 28 + 10*2 = 48 **/
         solidArea.height = 18;
-        message = new UI(gp);
         setDefaultValues();
         getPlayerImage();
     }
@@ -143,19 +142,28 @@ public class Player extends Entity {
                      gp.playSE(3);
                     hasKey++;
                     gp.objectDrawerThread.setObject(index, null);
-                    message.ShowMessage("YAWE!");
+                    gp.showMessage.ShowMessage("Kagi o te ni ireta!");
                 }
                 case "Door" -> {
                      gp.playSE(2);
                     if (hasKey > 0) {
                         gp.objectDrawerThread.setObject(index, null);
                         hasKey--;
+                        gp.showMessage.ShowMessage("Doru open!");
+                    }else {
+                        gp.showMessage.ShowMessage("Kagi doko?");
                     }
                 }
                 case "Orb" -> {
-                     gp.playSE(1);
+                    gp.playSE(1);
                     speed += 2;
                     gp.objectDrawerThread.setObject(index, null);
+                    gp.showMessage.ShowMessage("Yahaya~");
+                }
+                case "Chest" ->{
+                    gp.showMessage.gameFinished = true;
+                    gp.stopMusic();
+                    gp.playSE(4);
                 }
             }
         }
