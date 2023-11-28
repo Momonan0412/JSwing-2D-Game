@@ -37,9 +37,10 @@ public class FPS {
      * Calculates the time elapsed between the current frame and the previous frame (delta time).
      **/
     public static void calcDeltaTime(){
+        Instant currentTime = Instant.now();
         fpsDeltaTime = Duration.between(beginTime, Instant.now());
-        deltaTime = (double) fpsDeltaTime.toMillis() - lastTime.toMillis();
-        lastTime = fpsDeltaTime;
+        deltaTime = (double) fpsDeltaTime.toMillis() / 1000;
+        lastTime = Duration.ofDays(currentTime.toEpochMilli());
     }
 
     /**

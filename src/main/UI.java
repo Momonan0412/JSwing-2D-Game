@@ -74,7 +74,8 @@ public class UI implements Cloneable {
         }else {
 
             g2.drawString("x " + gp.player.hasKey, 80, 60);
-            playTime += (double) 1/60;
+            playTime += getPlayTime();  /** TO DO FIX TIMER **/
+            /** ISSUE: TIMER RESETS **/
             g2.drawString("Time: " + dFormat.format(playTime), getGPTile() * 11 , 60);
             // Picked Up "Message"
             if (messageOn) {
@@ -115,5 +116,13 @@ public class UI implements Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException("Cloning not supported for UI class", e);
         }
+    }
+
+    public double getPlayTime() { /** TO DO FIX TIMER **/
+        return playTime;
+    }
+
+    public void setPlayTime(double playTime) { /** TO DO FIX TIMER **/
+        this.playTime = playTime;
     }
 }

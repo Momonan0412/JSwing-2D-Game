@@ -19,7 +19,7 @@ public class GamePanel extends JPanel implements Runnable { /** Need Runnable In
     // WORLD SETTINGS!
     public final int maxWorldCol = 64;
     public final int maxWorldRow = 72;
-    int FPS = 60;
+    int FramePerSecond = 60;
     // SYSTEM
     TileManager tileM = new TileManager(this);
     KeyHandler keyH = new KeyHandler();
@@ -60,22 +60,30 @@ public class GamePanel extends JPanel implements Runnable { /** Need Runnable In
     }
     @Override
     public void run() {
-        double drawInterval = (double) 1000000000 / FPS;
+        double drawInterval = (double) 1000000000 / FramePerSecond;
         double delta = 0;
         long lastTime = System.nanoTime();
         long currentTime;
         long timer = 0;
         int drawCount = 0;
+        long playTime = 0; /** TO DO FIX TIMER **/
         while (gameThread != null) {
             currentTime = System.nanoTime();
             delta += (currentTime - lastTime) / drawInterval;
             timer += (currentTime - lastTime);
             lastTime = currentTime;
             if (delta >= 1) {
+                /** ISSUE: TIMER RESETS **/
+                playTime += timer; /** TO DO FIX TIMER **/
                 update();
                 repaint();
                 delta--;
                 drawCount++;
+                /** ISSUE: TIMER RESETS **/
+                /** SHOULD I USE THE "showMessage" ?
+                 *  OR INSTANIATE ANOTHER ?
+                 * **/
+                showMessage.setPlayTime((double) playTime / 1000000000L); /** TO DO FIX TIMER  **/
             }
             if(timer >= 1000000000){
                 System.out.println("FPS: " + drawCount);
