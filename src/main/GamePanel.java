@@ -17,24 +17,30 @@ public class GamePanel extends JPanel implements Runnable { /** Need Runnable In
     public final int screenWidth = tileSize * maxScreenCol; // 768 pixels
     public final int screenHeight = tileSize * maxScreenRow; // 576 pixels
     // WORLD SETTINGS!
-    public final int maxWorldCol = 64;
-    public final int maxWorldRow = 72;
+    public final int maxWorldCol = 64; // Change depends on map?
+    public final int maxWorldRow = 72; // Change depends on map?
     int FramePerSecond = 60;
+    // HANDLE THREADS?
+    private final Object lockObject = new Object();
     // SYSTEM
     TileManager tileM = new TileManager(this);
-    KeyHandler keyH = new KeyHandler();
+    KeyHandler keyH = new KeyHandler(this);
     Sound BGM = new Sound();
     Sound soundEffects = new Sound();
     public CollisionChecker cChecker;
     public AssetSetter aSetter;
+    // THREADS
     public ObjectDrawerThread objectDrawerThread;
     public UIDrawerThread uiDrawerThread;
     public UI showMessage;
     Thread gameThread;
     // ENTITY AND OBJECT
-
     public Player player = new Player(this, keyH);
-//    public SuperObject obj[] = new SuperObject[10];
+
+    // GAME STATE
+    public int gameState;
+    public final int playState = 1;
+    public final int pauseState = 2;
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black); // Corrected colon to semicolon
@@ -53,6 +59,8 @@ public class GamePanel extends JPanel implements Runnable { /** Need Runnable In
         uiDrawerThread.start();
         System.out.println("UI Drawer Thread!");
         playMusic(0);
+        stopMusic(); // MUTE GAME
+        gameState = playState;
     }
     public void startGameThread(){
         gameThread = new Thread(this);
@@ -83,7 +91,7 @@ public class GamePanel extends JPanel implements Runnable { /** Need Runnable In
                 /** SHOULD I USE THE "showMessage" ?
                  *  OR INSTANIATE ANOTHER ?
                  * **/
-                showMessage.setPlayTime((double) playTime / 1000000000L); /** TO DO FIX TIMER  **/
+//                showMessage.setPlayTime((double) playTime / 1000000000L); /** TO DO FIX TIMER  **/
             }
             if(timer >= 1000000000){
                 System.out.println("FPS: " + drawCount);
@@ -93,8 +101,26 @@ public class GamePanel extends JPanel implements Runnable { /** Need Runnable In
         }
     }
     public void update() {
-        player.update();
+        synchronized (lockObject) {
+            if (gameState == playState) {
+                if (!objectDrawerThread.isRunning()) {
+                    objectDrawerThread.startRunning();
+                }
+                if (!uiDrawerThread.isRunning()) {
+                    uiDrawerThread.startRunning();
+                }
+                player.update();
+            } else if (gameState == pauseState) {
+                if (objectDrawerThread.isRunning()) {
+                    objectDrawerThread.stopRunning();
+                }
+                if (uiDrawerThread.isRunning()) {
+                    uiDrawerThread.stopRunning();
+                }
+            }
+        }
     }
+
 
     public void paintComponent(Graphics g){
         Graphics2D g2 = (Graphics2D)g;
@@ -113,8 +139,7 @@ public class GamePanel extends JPanel implements Runnable { /** Need Runnable In
 
         // Draw UI elements and show messages
         uiDrawerThread.drawObjects(g2);
-        showMessage.writeMessage(g2);
-
+        showMessage.drawUI(g2);
         /**Debugging**/
         if(keyH.checkDrawTime){
             long drawEnd = System.nanoTime();

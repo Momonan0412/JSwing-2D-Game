@@ -7,6 +7,7 @@ import java.awt.*;
 
 public class ObjectDrawerThread extends Thread {
     private static final int UPDATE_INTERVAL_MS = 16;
+    private volatile boolean isRunning = true;
     private GamePanel gamePanel;
     public SuperObject[] obj;
     public ObjectDrawerThread(GamePanel gamePanel) {
@@ -16,13 +17,14 @@ public class ObjectDrawerThread extends Thread {
 
     @Override
     public void run() {
-        while (true) {
+        while (isRunning) {
             // Schedule a task to repaint Swing components on the EDT
-
-            SwingUtilities.invokeLater(() -> {
-                gamePanel.repaint();
-                updateAnimations();
-            });
+            if(gamePanel.gameState == gamePanel.playState){
+                SwingUtilities.invokeLater(() -> {
+                    gamePanel.repaint();
+                    updateAnimations();
+                });
+            }
 
             // Sleep for a short duration to control the update rate
             try {
@@ -32,7 +34,16 @@ public class ObjectDrawerThread extends Thread {
             }
         }
     }
-    private synchronized  void updateAnimations() {
+    public void stopRunning() { //PAUSE
+        isRunning = false;
+    }
+    public void startRunning() { //PLAY
+        isRunning = true;
+    }
+    public boolean isRunning() {
+        return isRunning;
+    }
+    private void updateAnimations() {
         for (SuperObject o : obj) {
             if (o != null) {
                 o.updateAnimation();

@@ -18,7 +18,6 @@ public class Player extends Entity {
     KeyHandler keyH;
     public final int screenX;
     public final int screenY;
-    public int hasKey = 0;
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
         this.keyH = keyH;
@@ -40,8 +39,8 @@ public class Player extends Entity {
         return size;
     }
     public void setDefaultValues(){
-        super.worldX = getGPTile()*36;
-        super.worldY = getGPTile()*32;
+        super.worldX = getGPTile()*30;
+        super.worldY = getGPTile()*38;
         super.speed = 2;
         super.upSize = 8; /** # Frames **/
         super.downSize = 8; /** # Frames **/
@@ -99,34 +98,27 @@ public class Player extends Entity {
             pickUpObject(objIndex);
             gp.cChecker.checkTile(this);
             if(!collisionOn){
-                switch (direction){
-                    case "up": super.worldY -= speed; break;
-                    case "down": super.worldY += speed; break;
-                    case "left": super.worldX -= speed; break;
-                    case "right": super.worldX += speed; break;
+                switch (direction) {
+                    case "up" -> super.worldY -= speed;
+                    case "down" -> super.worldY += speed;
+                    case "left" -> super.worldX -= speed;
+                    case "right" -> super.worldX += speed;
                 }
             }
             super.transition++;
             if(super.transition > 6){
                 switch (super.direction) {
-                    case "up":
-                        super.spriteCounter = (super.spriteCounter + 1) % super.upSize;
-                        break;
-                    case "down":
-                        super.spriteCounter = (super.spriteCounter + 1) % super.downSize;
-                        break;
-                    case "left":
-                        super.spriteCounter = (super.spriteCounter + 1) % super.leftSize;
-                        break;
-                    case "right":
-                        super.spriteCounter = (super.spriteCounter + 1) % super.rightSize;
-                        break;
-                    case "idle":
+                    case "up" -> super.spriteCounter = (super.spriteCounter + 1) % super.upSize;
+                    case "down" -> super.spriteCounter = (super.spriteCounter + 1) % super.downSize;
+                    case "left" -> super.spriteCounter = (super.spriteCounter + 1) % super.leftSize;
+                    case "right" -> super.spriteCounter = (super.spriteCounter + 1) % super.rightSize;
+                    case "idle" -> {
                         Random idle = new Random();
                         super.spriteCounter = idle.nextInt(100);
-                        if(super.spriteCounter > 1){
+                        if (super.spriteCounter > 1) {
                             super.spriteCounter = 2;
                         }
+                    }
                 }
                 super.transition = 0;
             }
@@ -134,36 +126,6 @@ public class Player extends Entity {
     }
     public void pickUpObject(int index) {
         if (index != 999 && gp.objectDrawerThread.getObject(index) != null) {
-            String objectName = gp.objectDrawerThread.obj[index].name;
-            switch (objectName) {
-                case "Key" -> {
-                     gp.playSE(3);
-                    hasKey++;
-                    gp.objectDrawerThread.setObject(index, null);
-                    gp.showMessage.ShowMessage("Kagi o te ni ireta!");
-                }
-                case "Door" -> {
-                     gp.playSE(2);
-                    if (hasKey > 0) {
-                        gp.objectDrawerThread.setObject(index, null);
-                        hasKey--;
-                        gp.showMessage.ShowMessage("Doru open!");
-                    }else {
-                        gp.showMessage.ShowMessage("Kagi doko?");
-                    }
-                }
-                case "Orb" -> {
-                    gp.playSE(1);
-                    speed += 2;
-                    gp.objectDrawerThread.setObject(index, null);
-                    gp.showMessage.ShowMessage("Yahaya~");
-                }
-                case "Chest" ->{
-                    gp.showMessage.gameFinished = true;
-                    gp.stopMusic();
-                    gp.playSE(4);
-                }
-            }
         }
     }
     @Override

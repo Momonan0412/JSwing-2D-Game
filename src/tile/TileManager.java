@@ -6,18 +6,25 @@ import main.UtilityTool;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Objects;
 
+import static main.GamePanel.getGPTile;
+
 public class TileManager implements VisibilityCheck {
+    private static final int FRAME_DELAY_MILLIS = 100; // Delay between frames in milliseconds
+    private int currentFrame = 0;
+    private long lastFrameTime = 0;
     GamePanel gp;
     public Tile[] tile;
 
     UtilityTool uTool;
     public int mapTileNum[][];
+    BufferedImage[] imgTemp;
     public TileManager(GamePanel gp){
         uTool = new UtilityTool();
         this.gp = gp;
@@ -27,41 +34,11 @@ public class TileManager implements VisibilityCheck {
         loadMap("/res/Maps/map001.txt");
     }
     public void getTileImage(){
-            setUp(0,"Grass", false);
-            setUp(1,"Small-Tree-Grass", true);
-            setUp(2,"Grass-Rock", true);
-            setUp(3,"Grass-Log", true);
-            setUp(4,"Mizu1-Top", true);
-            setUp(5,"Mizu2-Top", true);
-            setUp(6,"Mizu3-Top", true);
-            setUp(7,"Mizu1-Middle", true);
-            setUp(8,"Mizu2-Middle", true);
-            setUp(9,"Mizu3-Middle", true);
-            setUp(10,"Mizu1-Bottom", true);
-            setUp(11,"Mizu2-Bottom", true);
-            setUp(12,"Mizu3-Bottom", true);
-            setUp(14,"Grass-Stone", true);
-            setUp(15,"Grass-Dirt", false);
-            setUp(16,"Grass-Dirt2", false);
-            setUp(17,"Sand1", false);
-            setUp(18,"Sand2", true);
-            setUp(19,"Sand3", false);
-            setUp(20,"Sand4", false);
-            setUp(21,"Sand5", true);
-            setUp(22,"Sand6", false);
-        try{
-            /** TO-BE-REVISED
-             *  IDEA: WHAT IF THIS WOULD BE A "SUPER-OBJECT"? OR MAYBE CREATE A DESIGN CLASS?
-             *  OR JUST COMPLETE DELETE
-             *  OR JUST MAKE IT AN ANIMATION
-             * **/
-            tile[13] = new Tile();
-            tile[13].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/Aesthetic/Tree-Water.png")));/**(48*3)(48*3) PIXELS **/
-            tile[13].image = uTool.scaleImage(tile[13].image, gp.tileSize*3, gp.tileSize*3);
-            tile[13].collision = true;
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+            setUp(0,"Grass", false, 10);
+            setUp(1,"Small-Tree-Grass", true, 1);
+            setUp(2,"Grass-Rock", true, 1);
+            setUp(3,"Grass-Log", true, 1);
+            setUp(4,"Mizu1-Top", true, 1);
     }
     public void loadMap(String filePath){
         try{
@@ -82,7 +59,7 @@ public class TileManager implements VisibilityCheck {
                 }
             }
             br.close();
-        }catch (Exception e){
+        }catch (IOException e){
             e.printStackTrace();
         }
     }
@@ -92,6 +69,10 @@ public class TileManager implements VisibilityCheck {
      * * Hays!
      * * https://youtu.be/Ny_YHoTYcxo?list=PL_QPQmz5C6WUF-pOQDsbsKbaBZqXj4qSq
     **/
+
+    /** FOR THE CODE TO BE MORE READABLE!
+     *  TO DO: DIVIDE THE DRAW METHOD INTO SECTION OF METHODS
+     * **/
     public void draw(Graphics2D g2){
         int worldCol = 0;
         int worldRow = 0; /** WALA KO KASABUT! **/
@@ -118,7 +99,8 @@ public class TileManager implements VisibilityCheck {
                    g2.drawImage(tile[tileNum].image, screenX, screenY, drawSize, drawSize, null);
                    g2.drawRect(screenX, screenY, drawSize, drawSize); // Collision Check! Debug!
                  **/
-                    g2.drawImage(tile[tileNum].image, screenX, screenY, null);
+                    imgTemp = tile[tileNum].image;
+                    g2.drawImage(tile[tileNum].image[currentFrame], screenX, screenY, null);
                 }
             }
 
@@ -133,11 +115,22 @@ public class TileManager implements VisibilityCheck {
             }
         }
     }
-    public void setUp(int index, String imagePath, boolean collision){
+    public void updateAnimation() {
+        long currentTime = System.currentTimeMillis();
+
+        if (currentTime - lastFrameTime > FRAME_DELAY_MILLIS) {
+            currentFrame = (currentFrame + 1) % imgTemp.length;
+            lastFrameTime = currentTime;
+        }
+    }
+    public void setUp(int index, String imagePath, boolean collision, int numberImgs){
         try {
-            tile[index] = new Tile();
-            tile[index].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/Tiles/" + imagePath + ".png")));
-            tile[index].image = uTool.scaleImage(tile[index].image, gp.tileSize, gp.tileSize);
+            tile[index] = new Tile(); /** Redundant? - To be tested *COMMENT THIS LINE OF CODE IF TILE DOES NOT WORK* **/
+            tile[index] = tile[index].imageSetter(numberImgs);
+            for(int i = 0; i < tile[index].image.length; i++){
+                tile[index].image[i] = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/Tiles/" + imagePath + ( i+1 ) + ".png")));
+                tile[index].image[i] = uTool.scaleImage(tile[index].image[i], getGPTile(), getGPTile());
+            }
             tile[index].collision = collision;
         }catch (IOException e){
             e.printStackTrace();

@@ -5,7 +5,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class UIDrawerThread extends Thread{
-    private static final int UPDATE_INTERVAL_MS = 1;
+    private static final int UPDATE_INTERVAL_MS = 16;
+    private volatile boolean isRunning = true;
     private final GamePanel gamePanel;
 
     public static UI[] uiDisplay;
@@ -19,13 +20,15 @@ public class UIDrawerThread extends Thread{
     }
     @Override
     public void run() {
-        while (true) {
+        while (isRunning) {
             // Schedule a task to repaint Swing components on the EDT
 //            System.out.println("UI Drawer Thread!");
-            SwingUtilities.invokeLater(() -> {
-                gamePanel.repaint();
-                updateAnimations();
-            });
+            if(gamePanel.gameState == gamePanel.playState){
+                SwingUtilities.invokeLater(() -> {
+                    gamePanel.repaint();
+                    updateAnimations();
+                });
+            }
             try {
                 Thread.sleep(UPDATE_INTERVAL_MS);
             } catch (InterruptedException e) {
@@ -33,12 +36,21 @@ public class UIDrawerThread extends Thread{
             }
         }
     }
-    private synchronized void updateAnimations() {
+    public void stopRunning() { //PAUSE
+        isRunning = false;
+    }
+    public void startRunning() { //PLAY
+        isRunning = true;
+    }
+    public boolean isRunning() {
+        return isRunning;
+    }
+    private void updateAnimations() {
 //        System.out.println("updateAnimations");
         for (UI u : uiDisplay) {
             if (u != null) {
 //                System.out.println("Inside! updateAnimations");
-                u.updateAnimation();
+//                u.updateAnimation();
             }
         }
     }
@@ -48,7 +60,7 @@ public class UIDrawerThread extends Thread{
         for (UI u : uiDisplay){ ///////// 25/11/2023 Started to make it in a separate thread
             if(u != null){ // To avoid null pointer Error
 //                System.out.println("Inside! drawObjects");
-                u.draw(g2); // For drawing the key
+//                u.draw(g2); // For drawing the key
             }
         }
     }
