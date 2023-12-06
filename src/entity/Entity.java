@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public abstract class Entity {
+    GamePanel gp;
     public int worldX, worldY;
     public int speed;
     public BufferedImage[] up, down, left, right, idle;
@@ -16,5 +17,10 @@ public abstract class Entity {
     public Rectangle solidArea;
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean collisionOn = false;
-    public abstract void draw(Graphics2D g2);
+    public Entity(GamePanel gp) {
+        this.gp = gp;
+    }
+    public String getDirection(){
+        return direction;
+    };
 }

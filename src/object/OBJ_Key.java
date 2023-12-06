@@ -1,6 +1,7 @@
 package object;
 
 import interfaces.CloneableImageObject;
+import main.GamePanel;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -11,7 +12,8 @@ import static main.GamePanel.getGPTile;
 
 public class OBJ_Key extends SuperObject {
     BufferedImage[] imgs;
-    public OBJ_Key() {
+    public OBJ_Key(GamePanel gp) {
+        super(gp);
         imgs = new BufferedImage[8];
         images = new BufferedImage[8];
         super.name = "Key";

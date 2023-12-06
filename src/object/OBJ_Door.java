@@ -1,6 +1,7 @@
 package object;
 
 import interfaces.CloneableImageObject;
+import main.GamePanel;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -11,7 +12,8 @@ import static main.GamePanel.getGPTile;
 
 public class OBJ_Door extends SuperObject {
     BufferedImage[] imgs;
-    public OBJ_Door(){
+    public OBJ_Door(GamePanel gp){
+        super(gp);
         imgs = new BufferedImage[3];
         images = new BufferedImage[3];
         super.name = "Door";
@@ -33,6 +35,6 @@ public class OBJ_Door extends SuperObject {
 
     @Override
     public CloneableImageObject cloneObject() {
-        return (OBJ_Door) super.cloneObject();
+        return super.cloneObject();
     }
 }

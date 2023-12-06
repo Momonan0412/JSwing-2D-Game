@@ -6,6 +6,7 @@ import java.awt.*;
 
 public class UIDrawerThread extends Thread{
     private static final int UPDATE_INTERVAL_MS = 16;
+    private final Object pauseLock = new Object();
     private volatile boolean isRunning = true;
     private final GamePanel gamePanel;
 
@@ -34,13 +35,28 @@ public class UIDrawerThread extends Thread{
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            synchronized (pauseLock) {
+                while (!isRunning) {
+                    try {
+                        pauseLock.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
     }
-    public void stopRunning() { //PAUSE
-        isRunning = false;
+    public void stopRunning() { // PAUSE
+        synchronized (pauseLock) {
+            isRunning = false;
+        }
     }
-    public void startRunning() { //PLAY
-        isRunning = true;
+
+    public void startRunning() { // RESUME
+        synchronized (pauseLock) {
+            isRunning = true;
+            pauseLock.notifyAll();
+        }
     }
     public boolean isRunning() {
         return isRunning;

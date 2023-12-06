@@ -13,43 +13,60 @@ public class CollisionChecker {
         
     }
     public void checkTile(Entity entity){
-        int entityLeftWorldX = entity.worldX + entity.solidArea.x;
-        int entityRightWorldX = entity.worldX + entity.solidArea.x + entity.solidArea.width;
-        int entityTopWorldY = entity.worldY + entity.solidArea.y;
-        int entityBottomWorldY = entity.worldY + entity.solidArea.y + entity.solidArea.height;
-        /** https://youtu.be/oPzPpUcDiYY?list=PL_QPQmz5C6WUF-pOQDsbsKbaBZqXj4qSq&t=1114
-         * Explanation
-         *
+
+        /** "IF ELSE" TO BE DELETED!
+         *  FOR DEBUGGING PURPOSES
          * **/
-        int entityLeftCol = entityLeftWorldX / getGPTile();
-        int entityRightCol = entityRightWorldX / getGPTile();
-        int entityTopRow = entityTopWorldY / getGPTile();
-        int entityBottomRow = entityBottomWorldY / getGPTile();
-        int tileNum1 = 0, tileNum2 = 0;
-        switch(entity.direction){
-            case "up":
-                    entityTopRow = (entityTopWorldY - entity.speed) / getGPTile();
-                    tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityTopRow]; /** Collision of the pixel's top left most **/
-                    tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityTopRow]; /** Collision of the pixel's top right most **/
+        System.out.println("Checking tile for entity...");
+        if (entity != null && entity.solidArea != null) {
+        //
+        //
+            int entityLeftWorldX = entity.worldX + entity.solidArea.x;
+            int entityRightWorldX = entity.worldX + entity.solidArea.x + entity.solidArea.width;
+            int entityTopWorldY = entity.worldY + entity.solidArea.y;
+            int entityBottomWorldY = entity.worldY + entity.solidArea.y + entity.solidArea.height;
+            /** https://youtu.be/oPzPpUcDiYY?list=PL_QPQmz5C6WUF-pOQDsbsKbaBZqXj4qSq&t=1114
+             * Explanation
+             *
+             * **/
+            int entityLeftCol = entityLeftWorldX / getGPTile();
+            int entityRightCol = entityRightWorldX / getGPTile();
+            int entityTopRow = entityTopWorldY / getGPTile();
+            int entityBottomRow = entityBottomWorldY / getGPTile();
+            int tileNum1 = 0, tileNum2 = 0;
+            switch(entity.direction){
+                case "up":
+                        entityTopRow = (entityTopWorldY - entity.speed) / getGPTile();
+                        tileNum1 = gp.tileManager.mapTileNum[entityLeftCol][entityTopRow]; /** Collision of the pixel's top left most **/
+                        tileNum2 = gp.tileManager.mapTileNum[entityRightCol][entityTopRow]; /** Collision of the pixel's top right most **/
+                        break;
+                case "down":
+                        entityBottomRow = (entityBottomWorldY + entity.speed) / getGPTile();
+                        tileNum1 = gp.tileManager.mapTileNum[entityLeftCol][entityBottomRow]; /** Collision of the pixel's bottom left most **/
+                        tileNum2 = gp.tileManager.mapTileNum[entityRightCol][entityBottomRow]; /** Collision of the pixel's bottom right most **/
+                        break;
+                case "left":
+                        entityLeftCol = (entityLeftWorldX - entity.speed) / getGPTile();
+                        tileNum1 = gp.tileManager.mapTileNum[entityLeftCol][entityTopRow]; /** Collision of the pixel's top left most **/
+                        tileNum2 = gp.tileManager.mapTileNum[entityLeftCol][entityBottomRow]; /** Collision of the pixel's bottom left most **/
+                        break;
+                case "right":
+                        entityRightCol = (entityRightWorldX + entity.speed) / getGPTile();
+                        tileNum1 = gp.tileManager.mapTileNum[entityRightCol][entityTopRow]; /** Collision of the pixel's top right most **/
+                        tileNum2 = gp.tileManager.mapTileNum[entityRightCol][entityBottomRow]; /** Collision of the pixel's bottom right most **/
                     break;
-            case "down":
-                    entityBottomRow = (entityBottomWorldY + entity.speed) / getGPTile();
-                    tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityBottomRow]; /** Collision of the pixel's bottom left most **/
-                    tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityBottomRow]; /** Collision of the pixel's bottom right most **/
-                    break;
-            case "left":
-                    entityLeftCol = (entityLeftWorldX - entity.speed) / getGPTile();
-                    tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityTopRow]; /** Collision of the pixel's top left most **/
-                    tileNum2 = gp.tileM.mapTileNum[entityLeftCol][entityBottomRow]; /** Collision of the pixel's bottom left most **/
-                    break;
-            case "right":
-                    entityRightCol = (entityRightWorldX + entity.speed) / getGPTile();
-                    tileNum1 = gp.tileM.mapTileNum[entityRightCol][entityTopRow]; /** Collision of the pixel's top right most **/
-                    tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityBottomRow]; /** Collision of the pixel's bottom right most **/
-                break;
-        }
-        if(gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision){
-            entity.collisionOn = true;
+            }
+            if(gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision){
+                entity.collisionOn = true;
+            }
+
+            /** "IF ELSE" TO BE DELETED!
+             *  FOR DEBUGGING PURPOSES
+             * **/
+        } else {
+            System.out.println("Warning: NonPlayableCharacter or solidArea is null.");
+            ///
+
         }
     }
     public int checkObject(Entity entity, boolean player){

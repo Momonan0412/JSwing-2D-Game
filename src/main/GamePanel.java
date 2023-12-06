@@ -1,8 +1,8 @@
 package main;
 
 import entity.Player;
+import tile.TileDrawerThread;
 import tile.TileManager;
-import object.SuperObject;
 
 import java.awt.*;
 import javax.swing.JPanel;
@@ -17,13 +17,15 @@ public class GamePanel extends JPanel implements Runnable { /** Need Runnable In
     public final int screenWidth = tileSize * maxScreenCol; // 768 pixels
     public final int screenHeight = tileSize * maxScreenRow; // 576 pixels
     // WORLD SETTINGS!
-    public final int maxWorldCol = 64; // Change depends on map?
-    public final int maxWorldRow = 72; // Change depends on map?
+    public static final int maxWorldCol = 64; // Change depends on map?
+    public static final int maxWorldRow = 72; // Change depends on map?
     int FramePerSecond = 60;
     // HANDLE THREADS?
     private final Object lockObject = new Object();
     // SYSTEM
-    TileManager tileM = new TileManager(this);
+//    TileManager tileM;
+    TileDrawerThread tileDrawerThread;
+    TileManager tileManager;
     KeyHandler keyH = new KeyHandler(this);
     Sound BGM = new Sound();
     Sound soundEffects = new Sound();
@@ -31,6 +33,7 @@ public class GamePanel extends JPanel implements Runnable { /** Need Runnable In
     public AssetSetter aSetter;
     // THREADS
     public ObjectDrawerThread objectDrawerThread;
+    public NPCDrawerThread npcDrawerThread;
     public UIDrawerThread uiDrawerThread;
     public UI showMessage;
     Thread gameThread;
@@ -38,6 +41,7 @@ public class GamePanel extends JPanel implements Runnable { /** Need Runnable In
     public Player player = new Player(this, keyH);
 
     // GAME STATE
+    DefaultGameCoordinator defaultGameCoordinator;
     public int gameState;
     public final int playState = 1;
     public final int pauseState = 2;
@@ -50,14 +54,22 @@ public class GamePanel extends JPanel implements Runnable { /** Need Runnable In
         cChecker = new CollisionChecker(this); /** COLLISION **/
         objectDrawerThread = new ObjectDrawerThread(this);
         uiDrawerThread = new UIDrawerThread(this);
-        aSetter = new AssetSetter(this, objectDrawerThread);
+        npcDrawerThread = new NPCDrawerThread(this);
+        tileManager = new TileManager(this);
+        tileDrawerThread = new TileDrawerThread(this, tileManager);
+        tileDrawerThread.setTiles(0, tileManager);
+        aSetter = new AssetSetter(this, objectDrawerThread, npcDrawerThread);
         showMessage = new UI(this);
+        defaultGameCoordinator = new DefaultGameCoordinator(this);
     }
     public void setupGame(){
+        tileDrawerThread.start();
         objectDrawerThread.start();
         aSetter.setObject();
+        aSetter.setNpc();
         uiDrawerThread.start();
-        System.out.println("UI Drawer Thread!");
+        npcDrawerThread.start();
+        System.out.println("setupGame() method! Passed~");
         playMusic(0);
         stopMusic(); // MUTE GAME
         gameState = playState;
@@ -103,20 +115,10 @@ public class GamePanel extends JPanel implements Runnable { /** Need Runnable In
     public void update() {
         synchronized (lockObject) {
             if (gameState == playState) {
-                if (!objectDrawerThread.isRunning()) {
-                    objectDrawerThread.startRunning();
-                }
-                if (!uiDrawerThread.isRunning()) {
-                    uiDrawerThread.startRunning();
-                }
+                defaultGameCoordinator.resumeAllThreads();
                 player.update();
             } else if (gameState == pauseState) {
-                if (objectDrawerThread.isRunning()) {
-                    objectDrawerThread.stopRunning();
-                }
-                if (uiDrawerThread.isRunning()) {
-                    uiDrawerThread.stopRunning();
-                }
+                defaultGameCoordinator.pauseAllThreads();
             }
         }
     }
@@ -132,9 +134,10 @@ public class GamePanel extends JPanel implements Runnable { /** Need Runnable In
             drawStart = System.nanoTime();
         }
         /**Debugging**/
-
-        tileM.draw(g2); // Layer 1 - Draw Tiles first
+        /** Added TileDrawerThread **/ // 11/30/2023
+        tileDrawerThread.drawTiles(g2); // Layer 1 - Draw Tiles
         objectDrawerThread.drawObjects(g2); // Layer 2 - Draw Objects
+        npcDrawerThread.drawNPCs(g2); // What layer for NPC?
         player.draw(g2); // Layer 3 - Draw Player
 
         // Draw UI elements and show messages

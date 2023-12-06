@@ -1,6 +1,7 @@
 package object;
 
 import interfaces.CloneableImageObject;
+import main.GamePanel;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -11,7 +12,9 @@ import static main.GamePanel.getGPTile;
 
 public class OBJ_Tornado extends SuperObject{
     BufferedImage[] imgs;
-    public OBJ_Tornado() {
+
+    public OBJ_Tornado(GamePanel gp) {
+        super(gp);
         imgs = new BufferedImage[8];
         images = new BufferedImage[8];
         super.name = "Tornado";

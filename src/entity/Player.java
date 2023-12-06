@@ -2,28 +2,22 @@ package entity;
 
 import main.*;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.nio.Buffer;
-import java.util.Objects;
 import java.util.Random;
 
 import static main.GamePanel.getGPTile;
 
 public class Player extends Entity {
     UtilityTool uTool;
-    GamePanel gp;
     KeyHandler keyH;
     public final int screenX;
     public final int screenY;
     public Player(GamePanel gp, KeyHandler keyH) {
-        this.gp = gp;
+        super(gp);
         this.keyH = keyH;
         this.screenX = (gp.screenWidth/2) - (getGPTile()/2);
         this.screenY = (gp.screenHeight/2) - (getGPTile()/2);
-//        solidArea = new Rectangle(5, 16, gp.tileSize-20, gp.tileSize-20); /** Adjust these values and check what works for the game **/
         solidArea = new Rectangle();
         solidArea.x = 13; /** x*2 + with == 48 **/
         solidArea.y = 30; /** y + height == 48 **/
@@ -39,8 +33,8 @@ public class Player extends Entity {
         return size;
     }
     public void setDefaultValues(){
-        super.worldX = getGPTile()*30;
-        super.worldY = getGPTile()*38;
+        super.worldX = getGPTile()*30; // postition
+        super.worldY = getGPTile()*38; // postition
         super.speed = 2;
         super.upSize = 8; /** # Frames **/
         super.downSize = 8; /** # Frames **/
@@ -57,19 +51,19 @@ public class Player extends Entity {
     }
     public void getPlayerImage(){
             for(int i = 0; i < upSize; i++){
-                super.up[i] = uTool.setup("Unfinished 2D Character/Back", i);
+                super.up[i] = uTool.setup("Unfinished 2D Character/Back", i, true);
             }
             for(int i = 0; i < downSize; i++){
-                super.down[i] = uTool.setup("Unfinished 2D Character/Front", i);
+                super.down[i] = uTool.setup("Unfinished 2D Character/Front", i, true);
             }
             for(int i = 0; i < leftSize; i++){
-                super.left[i] = uTool.setup("Unfinished 2D Character/Left", i);
+                super.left[i] = uTool.setup("Unfinished 2D Character/Left", i, true);
             }
             for(int i = 0; i < rightSize; i++){
-                super.right[i] = uTool.setup("Unfinished 2D Character/Right", i);
+                super.right[i] = uTool.setup("Unfinished 2D Character/Right", i, true);
             }
             for(int i = 0; i < idleSize; i++){
-                super.idle[i] = uTool.setup("Unfinished 2D Character/Idle", i);
+                super.idle[i] = uTool.setup("Unfinished 2D Character/Idle", i, true);
             }
     }
     public void update(){
@@ -83,9 +77,6 @@ public class Player extends Entity {
         } else if (keyH.rightPressed) {
             super.direction = "right";
         }
-//        else {
-//            super.direction = "idle";
-//        }
         if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
             /**
              * CHECK TILE COLLISION
@@ -128,7 +119,6 @@ public class Player extends Entity {
         if (index != 999 && gp.objectDrawerThread.getObject(index) != null) {
         }
     }
-    @Override
     public void draw(Graphics2D g2) {
 
             BufferedImage[] image = null;
@@ -150,10 +140,9 @@ public class Player extends Entity {
                     break;
             }
             if (image != null && spriteCounter < image.length) {
-//                g2.drawImage(image[spriteCounter], screenX, screenY, gp.tileSize, gp.tileSize, null);
                 g2.drawImage(image[spriteCounter], screenX, screenY, null);
-                g2.setColor(Color.RED); // or any other color
-                g2.drawRect(screenX, screenY, gp.tileSize, gp.tileSize); /** Collision Check! Debug! **/
+                g2.setColor(Color.RED);
+                g2.drawRect(screenX, screenY, getGPTile(), getGPTile()); /** Collision Check! Debug! **/
             }
     }
 }

@@ -1,5 +1,7 @@
 package main;
 
+import entity.NonPlayableCharacter;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -38,11 +40,13 @@ public class UtilityTool {
         return scaledImage;
     }
 
-    public BufferedImage setup(String path, int index){
+    public BufferedImage setup(String path, int index, boolean playable){
         BufferedImage img = null;
         try {
             img = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/res/" + path + (index + 1) + ".png")));
-            img = scaleImage(img, getGPTile(), getGPTile());
+            if(playable){
+                img = scaleImage(img, getGPTile(), getGPTile());
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

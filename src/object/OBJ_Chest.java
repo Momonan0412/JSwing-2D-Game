@@ -1,6 +1,7 @@
 package object;
 
 import interfaces.CloneableImageObject;
+import main.GamePanel;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -11,7 +12,8 @@ import static main.GamePanel.getGPTile;
 
 public class OBJ_Chest extends SuperObject {
     BufferedImage[] imgs;
-    public OBJ_Chest(){
+    public OBJ_Chest(GamePanel gp){
+        super(gp);
         imgs = new BufferedImage[2];
         images = new BufferedImage[2];
         super.name = "Chest";
@@ -32,6 +34,6 @@ public class OBJ_Chest extends SuperObject {
 
     @Override
     public CloneableImageObject cloneObject() {
-        return (OBJ_Chest) super.cloneObject();
+        return super.cloneObject();
     }
 }

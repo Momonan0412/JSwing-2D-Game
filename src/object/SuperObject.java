@@ -26,14 +26,8 @@ public abstract class SuperObject extends Entity implements VisibilityCheck, Clo
     private long lastFrameTime = 0;
     UtilityTool utilityTool = new UtilityTool();
 
-    @Override
-    public void draw(Graphics2D g2) {
-        try {
-            draw(g2, null);
-        } catch (Exception e) {
-            // Handle the exception
-            e.printStackTrace(); // or log the exception
-        }
+    public SuperObject(GamePanel gp) {
+        super(gp);
     }
     public void draw(Graphics2D g2, GamePanel gp) {
 //        System.out.println("Drawing frame: " + currentFrame);
@@ -88,17 +82,5 @@ public abstract class SuperObject extends Entity implements VisibilityCheck, Clo
             throw new InternalError(e);
         }
     }
-    /** SHALLOW CLONE COPY **/
-//    @Override
-//    public CloneableImageObject cloneObject() {
-//        try {
-//            SuperObject clonedObject = (SuperObject) super.clone();
-//            clonedObject.images = images; // Shallow copy: copying the reference to the array
-//
-//            return clonedObject;
-//        } catch (CloneNotSupportedException e) {
-//            throw new InternalError(e);
-//        }
-//    }
 
 }
