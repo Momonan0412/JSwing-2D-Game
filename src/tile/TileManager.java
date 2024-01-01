@@ -74,8 +74,8 @@ public class TileManager implements VisibilityCheck {
 //                System.out.println("Debug - worldCol: " + worldCol + ", worldRow: " + worldRow); // Debugging print
                 int tileNum = mapTileNum[worldCol][worldRow]; // Possible cause of ArrayIndexOutOfBoundsException
 //                System.out.println("Debug - tileNum: " + tileNum); // Debugging print
-                if(worldCol > 60 && worldRow > 70)
-                System.out.println("Debug - worldCol: " + worldCol + ", worldRow: " + worldRow);
+//                if(worldCol > 60 && worldRow > 70)
+//                System.out.println("Debug - worldCol: " + worldCol + ", worldRow: " + worldRow);
 
                 int worldX = worldCol * getGPTile(); /** WALA KO KASABUT! **/
                 int worldY = worldRow * getGPTile(); /** WALA KO KASABUT! **/

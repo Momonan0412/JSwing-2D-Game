@@ -92,7 +92,7 @@ public class NPCDrawerThread extends Thread {
     void drawNPCs(Graphics2D g2) {
         for (NonPlayableCharacter o : NPC) {
             if(o != null){
-                o.draw(g2, gamePanel);
+                o.draw(g2);
             }
         }
     }

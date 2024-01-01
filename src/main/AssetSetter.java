@@ -16,13 +16,13 @@ public class AssetSetter {
     }
     public void setNpc(){
         npcDrawerThread.NPC[0] = new NPC_MadameChiffon(gp);
-        npcDrawerThread.NPC[0].worldX = 31 * getGPTile();
-        npcDrawerThread.NPC[0].worldY = 36 * getGPTile();
+        npcDrawerThread.NPC[0].worldX = 30 * getGPTile(); /** this world x and world y values should be the coordinates that will be manipulated to move the npc **/
+        npcDrawerThread.NPC[0].worldY = 35 * getGPTile();
     }
     public void setObject(){
         objDrawerThread.obj[0] = new OBJ_Key(gp);
         objDrawerThread.obj[1] = (OBJ_Key)objDrawerThread.obj[0].cloneObject();
-        objDrawerThread.obj[2] = (OBJ_Key)objDrawerThread.obj[0].cloneObject();
+//        objDrawerThread.obj[2] = (OBJ_Key)objDrawerThread.obj[0].cloneObject();
 
         objDrawerThread.obj[0].worldX = getGPTile();
         objDrawerThread.obj[0].worldY = getGPTile();
@@ -30,8 +30,8 @@ public class AssetSetter {
         objDrawerThread.obj[1].worldX = 60 * getGPTile();
         objDrawerThread.obj[1].worldY = 70 * getGPTile();
 
-        objDrawerThread.obj[2].worldX = 30 * getGPTile();
-        objDrawerThread.obj[2].worldY = 35 * getGPTile();
+//        objDrawerThread.obj[2].worldX = 30 * getGPTile();
+//        objDrawerThread.obj[2].worldY = 35 * getGPTile();
 
         objDrawerThread.obj[3] = new OBJ_Door(gp);
         objDrawerThread.obj[4] = (OBJ_Door) objDrawerThread.obj[3].cloneObject();

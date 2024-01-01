@@ -11,18 +11,26 @@ import java.awt.image.BufferedImage;
 import java.util.Random;
 
 import static main.GamePanel.getGPTile;
-
+/** ALL NPC WILL NOT HAVE THE "48 * 48" SIZE THEY ARE NOT THE SAME AS PER USUAL
+ * SO, IT WILL NOT BE SCALED SIZE IS AS IT IS.
+ * **/
 public abstract class NonPlayableCharacter extends Entity implements VisibilityCheck, CloneableImageObject {
     private static final int FRAME_DELAY_MILLIS = 100; // Delay between frames in milliseconds
-    private static final int DEFAULT_SOLID_AREA_WIDTH = 48;
-    private static final int DEFAULT_SOLID_AREA_HEIGHT = 48;
+//    private static final int DEFAULT_SOLID_AREA_WIDTH = 48;
+//    private static final int DEFAULT_SOLID_AREA_HEIGHT = 48;
     public BufferedImage[] images; // Modified to use an array of images
     public String name;
     public boolean collision = false;
-    public int worldX, worldY;
-    public Rectangle solidArea = new Rectangle(0,0,DEFAULT_SOLID_AREA_WIDTH,DEFAULT_SOLID_AREA_HEIGHT);
-    public int solidAreaDefaultX = 0;
-    public int solidAreaDefaultY = 0;
+/**
+ * Date 01/01/2024 COMMENTED OUT MAKES A BUG
+ **/
+//    public int worldX, worldY;
+/**
+ *  worldX and worldY already in the entity classs and should not be in "this class"
+ **/
+//    public Rectangle solidArea = new Rectangle(0,0,DEFAULT_SOLID_AREA_WIDTH,DEFAULT_SOLID_AREA_HEIGHT);
+    public int solidAreaDefaultX;
+    public int solidAreaDefaultY;
     private int currentFrame = 0;
     private long lastFrameTime = 0;
     UtilityTool utilityTool = new UtilityTool();
@@ -30,16 +38,20 @@ public abstract class NonPlayableCharacter extends Entity implements VisibilityC
     public NonPlayableCharacter(GamePanel gp) {
         super(gp);
     }
-    public void draw(Graphics2D g2, GamePanel gp) {
+    public void draw(Graphics2D g2) {
         BufferedImage[] image = null;
         try {
             if (gp == null) {
                 throw new NullPointerException();
             } else {
-                int screenX = worldX - gp.player.worldX + gp.player.screenX;
-                int screenY = worldY - gp.player.worldY + gp.player.screenY;
-
-                if (isVisible(worldX, worldY, gp)) {
+                int screenX = super.worldX - gp.player.worldX + gp.player.screenX;
+                int screenY = super.worldY - gp.player.worldY + gp.player.screenY;
+                System.out.println("Direction: " + direction);
+                System.out.println("World X: " + super.worldX);
+                System.out.println("World Y: " + super.worldY);
+                System.out.println("Game Panel World X: " + screenX);
+                System.out.println("Game Panel World Y: " + screenY);
+                if (isVisible(super.worldX, super.worldY, gp)) {
                     switch (super.direction) {
                         case "up":
                             image = super.up;
@@ -58,9 +70,10 @@ public abstract class NonPlayableCharacter extends Entity implements VisibilityC
                             break;
                     }
                     if (image != null && spriteCounter < image.length) {
-                        g2.drawImage(getImages()[spriteCounter], screenX, screenY, null);
-                        g2.setColor(Color.RED);
-                        g2.drawRect(screenX, screenY, getGPTile(), getGPTile()); /** Collision Check! Debug! **/
+                        setImageAndRect(g2, screenX, screenY, spriteCounter);
+//                        g2.drawImage(getImages()[spriteCounter], screenX, screenY, null);
+//                        g2.setColor(Color.RED);
+//                        g2.drawRect(screenX, screenY, 72, 105); /** Collision Check! Debug! **/
                     }
                 }
             }
@@ -68,25 +81,42 @@ public abstract class NonPlayableCharacter extends Entity implements VisibilityC
             e.printStackTrace();
         }
     }
+    public abstract void setImageAndRect(Graphics2D g2, int screenX, int screenY, int spriteCounter);
     public void update() {
         setAction();
         collisionOn = false;
 
         /** "IF" TO BE DELETED!
          *  FOR DEBUGGING PURPOSES
+         *  01/01/2024
          * **/
         if (gp.cChecker != null) {
             /** WILL BE AND SHOULD BE REVISED SINCE I FEEL LIKE THIS IS CHEATING! **/
             gp.cChecker.checkTile(this); // Check if this line is problematic
             /** NOT THE ISSUE, EVEN THOUGH IT POINTS IN HERE? **/
         }
-        //
         if(!collisionOn){
             switch (direction) {
-                case "up" -> super.worldY -= speed;
-                case "down" -> super.worldY += speed;
-                case "left" -> super.worldX -= speed;
-                case "right" -> super.worldX += speed;
+                case "up":
+//                    super.worldY -= speed; /** Previous used "wordX and worldY coordinates, which I think is wrong (?) **/
+//                    gp.player.worldY -= speed; // 01/01/2024 // produces Earthquake Effect HAHAHAHA
+                    super.worldY -= speed;
+                    break;
+                case "down":
+//                    super.worldY += speed; /** Previous used "wordX and worldY coordinates, which I think is wrong (?) **/
+//                    gp.player.worldY += speed; // 01/01/2024 // produces Earthquake Effect HAHAHAHA
+                    super.worldY += speed;
+                    break;
+                case "left":
+//                    super.worldX -= speed; /** Previous used "wordX and worldY coordinates, which I think is wrong (?) **/
+//                    gp.player.worldX -= speed; // 01/01/2024 // produces Earthquake Effect HAHAHAHA
+                    super.worldX -= speed;
+                    break;
+                case "right":
+//                    super.worldX += speed; /** Previous used "wordX and worldY coordinates, which I think is wrong (?) **/
+//                    gp.player.worldX += speed; // 01/01/2024 // produces Earthquake Effect HAHAHAHA
+                    super.worldX += speed;
+                    break;
             }
         }
         super.transition++;
@@ -101,7 +131,7 @@ public abstract class NonPlayableCharacter extends Entity implements VisibilityC
             super.transition = 0;
         }
     }
-    public abstract void setAction();
+    public void setAction(){}
 
     public abstract BufferedImage[] getImages(); // Getter for the array of images
     @Override

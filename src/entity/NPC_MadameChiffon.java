@@ -7,21 +7,31 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
+import static main.GamePanel.getGPTile;
+
 public class NPC_MadameChiffon extends NonPlayableCharacter{
     public NPC_MadameChiffon(GamePanel gp) {
         super(gp);
-
         solidArea = new Rectangle();
-        solidArea.x = 12; // Adjusted x-coordinate for a 48x48 solid area within a 72x105 character
-        solidArea.y = 30; // Adjusted y-coordinate for a 48x48 solid area within a 72x105 character
+        solidArea.x = 24; // Adjusted x-coordinate for a 48x48 tile solid area within a 72x105 character
+        solidArea.y = 70; // Adjusted y-coordinate for a 48x48 tile solid area within a 72x105 character
         super.solidAreaDefaultX = solidArea.x;
         super.solidAreaDefaultY = solidArea.y;
-        solidArea.width = 48; // Width of the solid area
-        solidArea.height = 48; // Height of the solid area
+        solidArea.width = 24; // Width of the solid area
+        solidArea.height = 35; // Height of the solid area
 
 
         setDefaultValues();
         getImage();
+    }
+
+    @Override
+    public void setImageAndRect(Graphics2D g2, int sX, int sY, int spriteCtr) {
+        g2.drawImage(getImages()[spriteCtr], sX, sY, null);
+        g2.setColor(Color.RED);
+        g2.drawRect(sX, sY, 72, 105);
+        g2.setColor(Color.BLUE);
+        g2.drawRect(sX + solidArea.x, sY  + solidArea.y, solidArea.width, solidArea.height);
     }
 
     @Override

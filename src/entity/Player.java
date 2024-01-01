@@ -19,7 +19,7 @@ public class Player extends Entity {
         this.screenX = (gp.screenWidth/2) - (getGPTile()/2);
         this.screenY = (gp.screenHeight/2) - (getGPTile()/2);
         solidArea = new Rectangle();
-        solidArea.x = 13; /** x*2 + with == 48 **/
+        solidArea.x = 13; /** x*2 + width == 48 **/
         solidArea.y = 30; /** y + height == 48 **/
         super.solidAreaDefaultX = solidArea.x;
         super.solidAreaDefaultY = solidArea.y;
@@ -143,6 +143,8 @@ public class Player extends Entity {
                 g2.drawImage(image[spriteCounter], screenX, screenY, null);
                 g2.setColor(Color.RED);
                 g2.drawRect(screenX, screenY, getGPTile(), getGPTile()); /** Collision Check! Debug! **/
+                g2.setColor(Color.BLUE);
+                g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
             }
     }
 }

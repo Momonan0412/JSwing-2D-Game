@@ -17,7 +17,7 @@ public class CollisionChecker {
         /** "IF ELSE" TO BE DELETED!
          *  FOR DEBUGGING PURPOSES
          * **/
-        System.out.println("Checking tile for entity...");
+//        System.out.println("Checking tile for entity...");
         if (entity != null && entity.solidArea != null) {
         //
         //
