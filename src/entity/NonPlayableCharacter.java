@@ -8,7 +8,6 @@ import object.SuperObject;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.Random;
 
 import static main.GamePanel.getGPTile;
 /** ALL NPC WILL NOT HAVE THE "48 * 48" SIZE THEY ARE NOT THE SAME AS PER USUAL
@@ -16,8 +15,6 @@ import static main.GamePanel.getGPTile;
  * **/
 public abstract class NonPlayableCharacter extends Entity implements VisibilityCheck, CloneableImageObject {
     private static final int FRAME_DELAY_MILLIS = 100; // Delay between frames in milliseconds
-//    private static final int DEFAULT_SOLID_AREA_WIDTH = 48;
-//    private static final int DEFAULT_SOLID_AREA_HEIGHT = 48;
     public BufferedImage[] images; // Modified to use an array of images
     public String name;
     public boolean collision = false;
@@ -31,9 +28,8 @@ public abstract class NonPlayableCharacter extends Entity implements VisibilityC
 //    public Rectangle solidArea = new Rectangle(0,0,DEFAULT_SOLID_AREA_WIDTH,DEFAULT_SOLID_AREA_HEIGHT);
     public int solidAreaDefaultX;
     public int solidAreaDefaultY;
-    private int currentFrame = 0;
-    private long lastFrameTime = 0;
     UtilityTool utilityTool = new UtilityTool();
+    public int actionLockCounter = 0;
 
     public NonPlayableCharacter(GamePanel gp) {
         super(gp);
@@ -46,11 +42,11 @@ public abstract class NonPlayableCharacter extends Entity implements VisibilityC
             } else {
                 int screenX = super.worldX - gp.player.worldX + gp.player.screenX;
                 int screenY = super.worldY - gp.player.worldY + gp.player.screenY;
-                System.out.println("Direction: " + direction);
-                System.out.println("World X: " + super.worldX);
-                System.out.println("World Y: " + super.worldY);
-                System.out.println("Game Panel World X: " + screenX);
-                System.out.println("Game Panel World Y: " + screenY);
+//                System.out.println("Direction: " + direction);
+//                System.out.println("World X: " + super.worldX);
+//                System.out.println("World Y: " + super.worldY);
+//                System.out.println("Game Panel World X: " + screenX);
+//                System.out.println("Game Panel World Y: " + screenY);
                 if (isVisible(super.worldX, super.worldY, gp)) {
                     switch (super.direction) {
                         case "up":
@@ -83,18 +79,22 @@ public abstract class NonPlayableCharacter extends Entity implements VisibilityC
     }
     public abstract void setImageAndRect(Graphics2D g2, int screenX, int screenY, int spriteCounter);
     public void update() {
-        setAction();
+        actionLockCounter++;
+        if(actionLockCounter == 120){
+            setAction();
+            actionLockCounter = 0;
+        }
         collisionOn = false;
 
         /** "IF" TO BE DELETED!
          *  FOR DEBUGGING PURPOSES
          *  01/01/2024
          * **/
-        if (gp.cChecker != null) {
+//        if (gp.cChecker != null) { // 03/01/2024 Commented
             /** WILL BE AND SHOULD BE REVISED SINCE I FEEL LIKE THIS IS CHEATING! **/
             gp.cChecker.checkTile(this); // Check if this line is problematic
             /** NOT THE ISSUE, EVEN THOUGH IT POINTS IN HERE? **/
-        }
+//        }
         if(!collisionOn){
             switch (direction) {
                 case "up":
@@ -126,7 +126,7 @@ public abstract class NonPlayableCharacter extends Entity implements VisibilityC
                 case "down" -> super.spriteCounter = (super.spriteCounter + 1) % super.downSize;
                 case "left" -> super.spriteCounter = (super.spriteCounter + 1) % super.leftSize;
                 case "right" -> super.spriteCounter = (super.spriteCounter + 1) % super.rightSize;
-                case "idle" -> super.spriteCounter = (super.spriteCounter + 1) % super.idleSize;
+//                case "idle" -> super.spriteCounter = (super.spriteCounter + 1) % super.idleSize;
             }
             super.transition = 0;
         }
